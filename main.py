@@ -137,11 +137,20 @@ st.title("**Data Analysis and Visualization: Query Mark Analysis**")
 st.write("This project provides statistical analysis and visualization for Numeric data queries, focusing on distributions, Z-Scores, Percentiles, and Probability Density functions.")
 
 # File uploader
-uploaded_file = st.file_uploader("Upload CSV File", type=["csv"])
+uploaded_file = st.file_uploader("Upload CSV File", type=["csv", "xlsx", "xls"])
     
 if uploaded_file is not None:
-    # Read the uploaded CSV file into a DataFrame
-    df = pd.read_csv(uploaded_file)
+    try:
+        # Determine file type based on extension and read accordingly
+        if uploaded_file.name.endswith('.csv'):
+            df = pd.read_csv(uploaded_file)
+        elif uploaded_file.name.endswith(('.xlsx', '.xls')):
+            df = pd.read_excel(uploaded_file)
+        else:
+            st.error("Unsupported file format. Please upload a CSV or Excel file.")
+    except Exception as e:
+        st.error(f"Error loading file: {e}")
+        
     st.session_state["df"]=df
 
     # Display the DataFrame in the app
